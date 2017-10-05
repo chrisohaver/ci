@@ -10,8 +10,8 @@ integration-setup:
 	cd ${GOPATH}/src/${COREDNSPATH} && \
 	  git clone https://${COREDNSPATH}/coredns.git && \
 	  cd coredns && \
-	  git fetch origin ${PR}:${GOPATH} && \
-	  git checkout ${GOPATH}
+	  git fetch --depth 1 origin pull/${PR}/head:pr-${PR} && \
+	  git checkout pr-${PR}
 
 	# Start local docker image repo (k8s must pull images from a repo)
 	docker run -d -p 5000:5000 --restart=always --name registry registry:2.6.2

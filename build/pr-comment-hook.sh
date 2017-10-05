@@ -31,7 +31,7 @@ function finish {
 trap finish EXIT
 
 # Get the contents of the comment
-body=$(echo ${PAYLOAD} | jq '.issue.body' | tr -d "\n\"")
+body=$(echo ${PAYLOAD} | jq '.comment.body' | tr -d "\n\"")
 
 case "${body}" in
   */integration*)
