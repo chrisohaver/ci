@@ -8,7 +8,7 @@ integration-setup:
 	# Get coredns code
 	mkdir -p ${GOPATH}/src/${COREDNSPATH}
 	cd ${GOPATH}/src/${COREDNSPATH} && \
-	  git clone https://${COREDNSPATH}/coredns.git && \
+	  git clone https://${COREDNSREPO}/coredns.git && \
 	  cd coredns && \
 	  git fetch --depth 1 origin pull/${PR}/head:pr-${PR} && \
 	  git checkout pr-${PR}

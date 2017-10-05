@@ -2,6 +2,7 @@
 
 set -e
 
+export COREDNSREPO='github.com/chrisohaver'
 export COREDNSPATH='github.com/coredns'
 
 # We receive all json in one giant string in the env var $PAYLOAD.
@@ -43,7 +44,7 @@ case "${body}" in
     # Get ci code
     mkdir -p ${GOPATH}/src/${COREDNSPATH}
     cd ${GOPATH}/src/${COREDNSPATH}
-    git clone https://${COREDNSPATH}/ci.git
+    git clone https://${COREDNSREPO}/ci.git
     cd ci
     # Do integration setup and test
     make integration
