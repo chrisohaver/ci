@@ -21,7 +21,7 @@ integration-setup:
 	  $(MAKE) coredns SYSTEM="GOOS=linux" && \
 	  docker build -t coredns . && \
 	  docker tag coredns localhost:5000/coredns && \
-	  docker push localhost:5000/coredns && \
+	  docker push localhost:5000/coredns
 
 	# Set up minikube
 	sh ./build/kubernetes/minikube_setup.sh
