@@ -9,12 +9,17 @@ if [[ -z ${PAYLOAD} ]]; then
     exit 1
 fi
 
-# PRs are Issues with a pull_request section.
-pull_url=$(echo ${PAYLOAD} | jq '.issue.pull_request.url' | tr -d "\n\"")
+# Only trigger on comment creation
+action=$(echo ${PAYLOAD} | jq '.action' | tr -d "\n\"")
+if [[ "${action}" != "created" ]]; then
+  exit 0
+fi
 
-# If there is no pull url, then this is not a PR, we can exit
+# PRs are Issues with a pull_request section.
+# If there is no pull_request section, then this is not a PR, we can exit
+pull_url=$(echo ${PAYLOAD} | jq '.issue.pull_request.url' | tr -d "\n\"")
 if [[ -z ${pull_url} ]]; then
-    exit 0
+  exit 0
 fi
 
 # Get the PR number
