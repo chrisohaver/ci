@@ -18,7 +18,7 @@ integration-setup:
 
 	# Build coredns docker image, and push to local repo
 	cd ${GOPATH}/src/${COREDNSPATH}/coredns && \
-	  $(MAKE) coredns SYSTEM="GOOS=linux" && \
+	  ${MAKE} coredns SYSTEM="GOOS=linux" && \
 	  docker build -t coredns . && \
 	  docker tag coredns localhost:5000/coredns && \
 	  docker push localhost:5000/coredns
