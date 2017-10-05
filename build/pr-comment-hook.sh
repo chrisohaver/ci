@@ -47,7 +47,6 @@ case "${body}" in
     git clone https://${COREDNSREPO}/ci.git
     cd ci
     # Do integration setup and test
-    export K8S_VERSION='v1.7.5'
     make integration
     # TODO post results back to pr
   ;;
