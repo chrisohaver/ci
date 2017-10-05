@@ -14,7 +14,7 @@ integration-setup:
 	  git checkout pr-${PR}
 
 	# Start local docker image repo (k8s must pull images from a repo)
-	docker run -d -p 5000:5000 --restart=always --name registry registry:2.6.2
+	docker run -d -p 5000:5000 --restart=always --name registry registry:2.6.2 || true
 
 	# Build coredns docker image, and push to local repo
 	cd ${GOPATH}/src/${COREDNSPATH}/coredns && \
