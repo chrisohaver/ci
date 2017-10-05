@@ -2,7 +2,7 @@
 
 set -e
 
-export COREDNSREPO='github.com/chrisohaver'
+export COREDNSREPO='github.com/coredns'
 export COREDNSPATH='github.com/coredns'
 
 # We receive all json in one giant string in the env var $PAYLOAD.
@@ -47,6 +47,7 @@ case "${body}" in
     git clone https://${COREDNSREPO}/ci.git
     cd ci
     # Do integration setup and test
+    export K8S_VERSION='v1.7.5'
     make integration
     # TODO post results back to pr
   ;;
