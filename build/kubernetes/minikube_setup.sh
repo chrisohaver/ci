@@ -1,7 +1,7 @@
 #!/bin/bash
 set -v
 
-ci_bin=$GOPATH/src/github/coredns/ci/build
+ci_bin=$GOPATH/src/github.com/coredns/ci/build
 
 # Start local docker image repository
 docker run -d -p 5000:5000 --restart=always --name registry registry:2.6.2

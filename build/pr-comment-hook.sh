@@ -4,6 +4,8 @@ set -e
 
 export COREDNSREPO='github.com/coredns'
 export COREDNSPATH='github.com/coredns'
+export PATH=$PATH:/usr/local/go/bin
+export HOME=/root
 
 # We receive all json in one giant string in the env var $PAYLOAD.
 if [[ -z ${PAYLOAD} ]]; then
@@ -47,7 +49,8 @@ case "${body}" in
     git clone https://${COREDNSREPO}/ci.git
     cd ci
     # Do integration setup and test
-    make integration
+    touch logs/${PR}.txt && chown www-data: ${PR}.txt
+    sudo -E make integration 2>&1 >> logs/${PR}.txt
     # TODO post results back to pr
   ;;
   */echo*)
