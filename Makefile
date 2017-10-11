@@ -28,7 +28,7 @@ integration-setup:
 
 .PHONY: integration-test
 integration-test:
-	go test -v -tags 'etcd k8s' ./test/...
+	go test -v -tags 'etcd k8s' ./test/... | sed ''/PASS/s//$(printf "<font color=green>PASS</>")/'' | sed ''/FAIL/s//$(printf "<font color=red>FAIL</>")/''
 
 .PHONY: integration-teardown
 integration-teardown:
