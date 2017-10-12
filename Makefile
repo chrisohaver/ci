@@ -29,7 +29,7 @@ test-kubernetes:
 	-sh ./build/kubernetes/minikube_setup.sh
 
 	# Do tests
-	go test -v -tags 'k8s' ./test/kubernetes...
+	go test -v -tags 'k8s' ./test/kubernetes/...
 
 	# Clean up
 	-sh ./build/kubernetes/minikube_teardown.sh
