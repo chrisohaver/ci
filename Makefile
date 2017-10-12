@@ -1,9 +1,9 @@
 
 
-integration: integration-setup integration-test integration-teardown
+test: fetch-pr test-kubernetes
 
-.PHONY: integration-setup
-integration-setup:
+.PHONY: fetch-pr
+fetch-pr:
 
 	# Get coredns code
 	mkdir -p ${GOPATH}/src/${COREDNSPATH}
@@ -13,8 +13,10 @@ integration-setup:
 	  git fetch --depth 1 origin pull/${PR}/head:pr-${PR} && \
 	  git checkout pr-${PR}
 
+.PHONY: test-kubernetes
+test-kubernetes:
 	# Start local docker image repo (k8s must pull images from a repo)
-	docker run -d -p 5000:5000 --restart=always --name registry registry:2.6.2 || true
+	-docker run -d -p 5000:5000 --restart=always --name registry registry:2.6.2 || true
 
 	# Build coredns docker image, and push to local repo
 	cd ${GOPATH}/src/${COREDNSPATH}/coredns && \
@@ -24,15 +26,13 @@ integration-setup:
 	  docker push localhost:5000/coredns
 
 	# Set up minikube
-	sh ./build/kubernetes/minikube_setup.sh
+	-sh ./build/kubernetes/minikube_setup.sh
 
-.PHONY: integration-test
-integration-test:
-	go test -v -tags 'etcd k8s' ./test/... | sed ''/PASS/s//$(printf "<font color=green>PASS</>")/'' | sed ''/FAIL/s//$(printf "<font color=red>FAIL</>")/''
+	# Do tests
+	go test -v -tags 'k8s' ./test/kubernetes...
 
-.PHONY: integration-teardown
-integration-teardown:
-	sh ./build/kubernetes/minikube_teardown.sh
+	# Clean up
+	-sh ./build/kubernetes/minikube_teardown.sh
 
 .PHONY: install-webhook
 install-webhook:
