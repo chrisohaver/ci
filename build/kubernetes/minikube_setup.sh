@@ -50,7 +50,7 @@ done
 # Wait for all test pods in test-1 to be ready (there are 5)
 for i in {1..60} # timeout for 2 minutes
 do
-  kubectl -n test-1 get pods | grep Running | wc -l` == 5  && break
+  [ `kubectl -n test-1 get pods | grep Running | wc -l` == "5" ] && break
   sleep 2
 done
 
