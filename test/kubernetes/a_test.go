@@ -1,4 +1,4 @@
-// +build k8s k8s1
+// +build k8s
 
 package kubernetes
 
