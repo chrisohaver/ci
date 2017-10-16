@@ -81,30 +81,30 @@ case "${body}" in
     git fetch --depth 1 origin pull/2/head:pr-2
     git checkout pr-2
 
-	# Set up a clean up on exit
-    function cleanup {
+	# Set up a finish & clean up on exit
+    function finishIntegrationTest {
         make clean-kubernetes >> /var/www/log/${PR}.txt 2>&1 && status="PASS"
+        # Post result to pr
+        pass=$(cat /var/www/log/${PR}.txt | grep "^\-\-\- PASS:" | wc -l)
+        fail=$(cat /var/www/log/${PR}.txt | grep "^\-\-\- FAIL:" | wc -l)
+        subpass=$(cat /var/www/log/${PR}.txt | grep "^    \-\-\- PASS:" | wc -l)
+        subfail=$(cat /var/www/log/${PR}.txt | grep "^    \-\-\- FAIL:" | wc -l)
+        printf -v summary '\\n\\n
+        |          | Pass   | Fail   |\\n
+        | -------- | ------ | ------ |\\n
+        | Tests    | %s     | %s     |\\n
+        | Subtests | %s     | %s     |\\n' "${pass}" "${fail}" "${subpass}" "${subfail}"
+        summary=$(echo $summary | tr -d '\n')
+        updateStatus "Integration test $status. <a href='https://drone.coredns.io/log/view.html?pr=${PR}'>View Log</a> $summary"
         rmWorkdir
     }
-    trap cleanup EXIT
+    trap finishIntegrationTest EXIT
 
     # Do integration setup and test
     export K8S_VERSION='v1.7.5'
     status="FAIL"
     make test >> /var/www/log/${PR}.txt 2>&1 && status="PASS"
 
-    # Post result to pr
-    pass=$(cat /var/www/log/${PR}.txt | grep "^\-\-\- PASS:" | wc -l)
-    fail=$(cat /var/www/log/${PR}.txt | grep "^\-\-\- FAIL:" | wc -l)
-    subpass=$(cat /var/www/log/${PR}.txt | grep "^    \-\-\- PASS:" | wc -l)
-    subfail=$(cat /var/www/log/${PR}.txt | grep "^    \-\-\- FAIL:" | wc -l)
-    printf -v summary '\\n\\n
-    |          | Pass   | Fail   |\\n
-    | -------- | ------ | ------ |\\n
-    | Tests    | %s     | %s     |\\n
-    | Subtests | %s     | %s     |\\n' "${pass}" "${fail}" "${subpass}" "${subfail}"
-    summary=$(echo $summary | tr -d '\n')
-    echo SUMMARY = $summary
-    updateStatus "Integration test $status. <a href='https://drone.coredns.io/log/view.html?pr=${PR}'>View Log</a> $summary"
+
   ;;
 esac

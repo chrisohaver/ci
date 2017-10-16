@@ -50,7 +50,12 @@ done
 # Wait for all test pods in test-1 to be ready (there are 5)
 for i in {1..60} # timeout for 2 minutes
 do
-  [ `kubectl -n test-1 get pods | grep Running | wc -l` == "5" ] && break
+  if [ `kubectl -n test-1 get pods | grep Running | wc -l` == "5" ]; then
+    break
+  fi
   sleep 2
 done
+
+# Give coredns a chance to load the pods/svcs into api cache
+sleep 3
 
