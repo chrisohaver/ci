@@ -83,7 +83,7 @@ case "${body}" in
 
 	# Set up a finish & clean up on exit
     function finishIntegrationTest {
-        make clean-kubernetes >> /var/www/log/${PR}.txt 2>&1 && status="PASS"
+        make clean-kubernetes >> /var/www/log/${PR}.txt 2>&1
         # Post result to pr
         pass=$(cat /var/www/log/${PR}.txt | grep "^\-\-\- PASS:" | wc -l)
         fail=$(cat /var/www/log/${PR}.txt | grep "^\-\-\- FAIL:" | wc -l)
@@ -104,7 +104,6 @@ case "${body}" in
     export K8S_VERSION='v1.7.5'
     status="FAIL"
     make test >> /var/www/log/${PR}.txt 2>&1 && status="PASS"
-
 
   ;;
 esac
