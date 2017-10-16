@@ -1,7 +1,7 @@
 #!/bin/bash
 set -v
 
-ci_bin=$GOPATH/src/github/coredns/ci/build
+ci_bin=$GOPATH/src/github.com/coredns/ci/build
 
 # Start local docker image repository
 docker run -d -p 5000:5000 --restart=always --name registry registry:2.6.2
@@ -14,7 +14,11 @@ mkdir $HOME/.kube || true
 touch $HOME/.kube/config
 
 export KUBECONFIG=$HOME/.kube/config
-minikube start --vm-driver=none --kubernetes-version=${K8S_VERSION}
+if [[ -z ${K8S_VERSION} ]]; then
+  minikube start --vm-driver=none
+else
+  minikube start --vm-driver=none --kubernetes-version=${K8S_VERSION}
+fi
 
 # Wait for kubernetes api service to be ready
 for i in {1..60} # timeout for 2 minutes
@@ -46,8 +50,12 @@ done
 # Wait for all test pods in test-1 to be ready (there are 5)
 for i in {1..60} # timeout for 2 minutes
 do
-  kubectl -n test-1 get pods
-  [ `kubectl -n test-1 get pods | grep Running | wc -l` == 5 ] && break
+  if [ $(kubectl -n test-1 get pods | grep Running | wc -l) = "5" ]; then
+    break
+  fi
   sleep 2
 done
+
+# Give coredns a chance to load the pods/svcs into api cache
+sleep 3
 
