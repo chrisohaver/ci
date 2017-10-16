@@ -31,6 +31,8 @@ test-kubernetes:
 	# Do tests
 	go test -v -tags 'k8s' ./test/kubernetes/...
 
+.PHONY: clean-kubernetes
+clean-kubernetes:
 	# Clean up
 	-sh ./build/kubernetes/minikube_teardown.sh
 
